@@ -1,0 +1,27 @@
+{
+  "name": "employee-tracker-application",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AWonka/Employee-Tracker-Application.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AWonka/Employee-Tracker-Application/issues"
+  },
+  "homepage": "https://github.com/AWonka/Employee-Tracker-Application#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^14.3.2",
+    "inquirer": "^8.2.1",
+    "mysql2": "^2.3.3"
+  }
+}
