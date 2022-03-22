@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -7,75 +8,70 @@ const connection = mysql.createConnection({
     database: 'employee_db'
 });
 
-const promptUser = () => {
-    return inquirer.prompt ([
-        {
+const userMenu = () => {
+    return inquirer.prompt ({
+        
             type: 'list',
             message: 'Please select an option.',
-            name: 'choices',
+            name: 'menu',
             loop: false,
-            choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'End Application']
-        }
-    ])
+            choices: ['Departments', 'Roles', 'Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit'],
+        
+})
     .then((answer) => {
         switch(answer.choices) {
-            case 'View all departments':
-                viewDepartments();
+            case 'Departments':
+                Departments();
                 break;
-            case 'View all roles':
-                viewRoles();
+            case 'Roles':
+                Roles();
                 break;
-            case 'View all employees':
-                viewEmployees();
-                break;
-            case 'View all Managers':
-                viewManagers();
+            case 'Employees':
+                Employees();
                 break;    
-            case 'Add a department':
+            case 'Add Department':
                 addDepartment();
                 break;
-            case 'Add a role':
+            case 'Add Role':
                 addRole();
                 break;
-            case 'Add an employee':
+            case 'Add Employee':
                 addEmployee();
                 break;
-            case 'Update an employee role':
+            case 'Update Employee Role':
                 updateEmployee();
                 break;
-            case 'End Application':
-                console.log('Ending Application')
+            case 'Exit':
                 connection.end();
                 break;    
             default:
-                console.log('Please select an option');
-                promptUser();                            
+                userMenu();                            
         }
     });
 };
 
-const viewDepartments = () => {
+const Departments = () => {
     const dpt = `SELECT department.id AS ID, department.name AS Department FROM department`;
 
     connection.query(dpt, (err, info) => {
         if (err) throw err;
         console.table(info);
-        promptUser();
+        userMenu();
     });
 };
 
-const viewRoles = () => {
+const Roles = () => {
     const rls = `SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, department.name AS Department FROM role
     INNER JOIN department ON role.department_id = department.id`;
 
     connection.query(rls, (err, info) => {
         if (err) throw err;
         console.table(info);
-        promptUser();
+        userMenu();
     });
 };
 
-const viewEmployees = () => {
+const Employees = () => {
     const emp = `SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Job_Title, department.name AS Department, role.salary AS Salary, CONCAT(manager.first_name, " ",manager.last_name) AS Manager, manager.id AS ManagerID FROM employee
     INNER JOIN role ON employee.role_id = role.id
     INNER JOIN department ON role.department_id = department.id
@@ -84,7 +80,7 @@ const viewEmployees = () => {
     connection.query(emp, (err, info) => {
         if (err) throw err;
         console.table(info);
-        promptUser();
+        userMenu();
     });
 };
 
@@ -310,4 +306,4 @@ const updateEmployee = () => {
     });
 };
 
-promptUser()
+userMenu()
