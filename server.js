@@ -1,26 +1,11 @@
 const mysql = require('mysql2');
-
-require('dotenv').config();
-
+const inquirer = require('inquirer');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '16251GoKennesaw@wls',
     database: 'employee_db'
 });
-
-connection.connect(err => {
-    if (err) {
-        console.error('error connecting!');
-        return;
-    }
-    console.log('connected as id ' + connection.threadId);
-});
-
-
-
-
-const inquirer = require('inquirer');
 
 const promptUser = () => {
     return inquirer.prompt ([
