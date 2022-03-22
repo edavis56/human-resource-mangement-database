@@ -8,16 +8,17 @@ const connection = mysql.createConnection({
     database: 'employee_db'
 });
 
-const userMenu = () => {
-    return inquirer.prompt ({
-        
-            type: 'list',
-            message: 'Please select an option.',
-            name: 'menu',
-            loop: false,
-            choices: ['Departments', 'Roles', 'Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit'],
-        
+connection.connect(function(){
+    userMenu();
 })
+
+function userMenu() {
+    inquirer.prompt({
+        name: 'menu',
+        type: 'list',
+        message: 'Please select an option.',
+        choices: ['Departments', 'Roles', 'Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit']
+    })
     .then((answer) => {
         switch(answer.choices) {
             case 'Departments':
