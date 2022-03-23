@@ -83,7 +83,7 @@ function viewRoles() {
 }
 
 function viewEmployees() {
-  const query = `SELECT employee.firstName, employee.lastName, role.roleTitle, role.salary,department.dept_name AS department`;
+  const query = `SELECT employeeData.firstName, role.roleTitle, role.salary, department.depName AS department FROM role INNER JOIN department ON department.id = role.department_id`;
   connection.query(query, function (err, res) {
     if (err) throw err;
     console.table(res);
