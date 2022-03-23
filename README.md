@@ -30,7 +30,7 @@ SO THAT I can organize and plan my business
 
 ## 💻 Below is a screenshot of the application:
 
-![Human Resource CMS](/human-resource-mangement-database/images/2022-03-23_19-24-05.jpg)
+![Human Resource CMS](./images/2022-03-23_19-24-05.jpg)
 
 ## Acceptance Criteria
 
