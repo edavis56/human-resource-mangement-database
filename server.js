@@ -1,80 +1,242 @@
-const mysql = require('mysql');
-const inquirer = require('inquirer');
+const Inquirer = require("inquirer");
+const mySQL = require("mysql2");
 
-const connection = mysql.createConnection({
-    host: 'localhost',
+var connection = mySQL.createConnection({
+  host: 'localhost',
     user: 'root',
     password: '16251GoKennesaw@wls',
     database: 'employee_db'
-})
+});
 
-connection.connect(function(){
-    userMenu();
-})
+connection.connect(function (err) {
+  if (err) throw err;
+  userMenu();
+});
 
 function userMenu() {
-    inquirer.prompt({
-        name: 'menu',
-        type: 'list',
-        message: 'Please select an option using arrow keys.',
-        choices: ['Departments', 'Roles', 'Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit']
-    })
-    .then(function(answer) {
-        switch(answer.menu) {
-            case 'Departments':
-                Departments();
-                break;
-            case 'Employees':
-                Employees();
-                break;
-            case 'Roles':
-                Roles();
-                break;    
-            case 'Add Department':
-                addDepartment();
-                break;
-            case 'Add Employee':
-                addEmployee();
-                break;
-            case 'Add Role':
-                addRole();
-                break;
-            case 'Update Employee Role':
-                updateEmployee();
-                break;
-            case 'Exit':
-                connection.end();
-                break;    
-            default:
-                userMenu();                            
-        }
-    });
-};
-
-function Departments() {
-    connection.query("select id, depName", function() {
-        console.table('Department');
-        userMenu() 
-    })
+  Inquirer.prompt([
+    {
+      type: "list",
+      name: "userOption",
+      message: "Main Menu",
+      loop: false,
+      choices: [
+        "View Departments",
+        "View Roles",
+        "View Employees",
+        "Add a Department",
+        "Add a Role",
+        "Add an Employee",
+        "Exit Application",
+      ],
+    },
+  ]).then(function ({ userOption }) {
+    switch (userOption) {
+      case "View Departments": {
+        viewDepartments();
+        break;
+      }
+      case "View Roles": {
+        viewRoles();
+        break;
+      }
+      case "View Employees": {
+        viewEmployees();
+        break;
+      }
+      case "Add a Department": {
+        addDepartment();
+        break;
+      }
+      case "Add a Role": {
+        addRole();
+        break;
+      }
+      case "Add an Employee": {
+        addEmployee();
+        break;
+      }
+      case "Exit Application": {
+        connection.end();
+        break;
+      }
+    }
+  });
 }
 
-function Employees() {
-    let query = `SELECT employee.id AS ID, employee.firstName AS First_Name`;
+function viewDepartments() {
+  const query = `SELECT * FROM department`;
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    userMenu();
+  });
+}
 
-    connection.query(query, function(err, res) {
+function viewRoles() {
+  const query = `SELECT role.id, role.roleTitle, role.salary, department.depName AS department FROM role INNER JOIN department ON department.id = role.department_id`;
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    userMenu();
+  });
+}
+
+function viewEmployees() {
+  const query = `SELECT employee.firstName, employee.lastName, role.roleTitle, role.salary,department.dept_name AS department`;
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    userMenu();
+  });
+}
+
+
+function addDepartment() {
+  var query = `SELECT * FROM department`;
+
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+
+    const availableDepartments = res.map(({ id, depName }) => ({
+      value: id,
+      Department: `${depName}`,
+    }));
+
+    createDepartment(availableDepartments);
+  });
+}
+
+function createDepartment() {
+  Inquirer.prompt([
+    {
+      type: "input",
+      name: "depName",
+      message: "New Department Name?",
+    },
+  ]).then(function (answer) {
+    console.log(answer);
+
+    var depAddQuery = `INSERT INTO department SET ?`;
+
+    connection.query(
+      depAddQuery,
+      {
+        depName: answer.depName,
+      },
+      function (err, res) {
+        if (err) throw err;
+
         console.table(res);
+
         userMenu();
-    })
+      }
+    );
+  });
 }
 
-function Roles() {
-    const query = `SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, department.name AS Department FROM role
-    INNER JOIN department ON role.department_id = department.id`;
+function addRole() {
+  Inquirer.prompt([
+    {
+      type: "input",
+      name: "roleTitle",
+      message: "Enter New Job Title",
+      validate: (roleTitle) => {
+        if (roleTitle) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "Enter Salary",
+      validate: (salary) => {
+        if (isNaN(salary)) {
+          return false;
+        } else if (!salary) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "department_id",
+      message: "Enter New Job's Department",
+      validate: (department_id) => {
+        if (isNaN(department_id)) {
+          return false;
+        } else if (!department_id) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+  ]).then(({ roleTitle, salary, department_id }) => {
+    const query = `INSERT INTO role (roleTitle, salary, department_id) VALUES ('${roleTitle}','${salary}','${department_id}')`;
+    connection.query(query, function (err, res) {
+      if (err) throw err;
 
-    connection.query(query, function(err, res) {
-        console.table('roles', res);
-        userMenu();
-    })
+      console.table(res);
+
+      userMenu();
+    });
+  });
 }
 
-userMenu()
+function addEmployee() {
+  Inquirer.prompt([
+    {
+      type: "input",
+      name: "firstName",
+      message: "Employee's First Name?",
+      validate: (firstName) => {
+        if (firstName) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message: "Employee's Last Name",
+      validate: (lastName) => {
+        if (lastName) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "role_id",
+      message: "Employee's Role ID",
+      validate: (role_id) => {
+        if (isNaN(role_id)) {
+          return false;
+        } else if (!role_id) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+  ]).then(({ firstName, lastName, role_id}) => {
+    const query = `INSERT INTO employee (firstName, lastName, role_id) VALUES ('${firstName}','${lastName}','${role_id}')`;
+    connection.query(query, function (err, res) {
+      if (err) throw err;
+
+      console.table(res);
+
+      userMenu();
+    });
+  });
+}
