@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql');
 const inquirer = require('inquirer');
 
 const connection = mysql.createConnection({
@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
     user: 'root',
     password: '16251GoKennesaw@wls',
     database: 'employee_db'
-});
+})
 
 connection.connect(function(){
     userMenu();
@@ -59,13 +59,10 @@ function Departments() {
 }
 
 function Employees() {
-    const query = `SELECT employee.id AS ID, employee.first_name AS First_Name, employee.last_name AS Last_Name, role.title AS Job_Title, department.name AS Department, role.salary AS Salary, CONCAT(manager.first_name, " ",manager.last_name) AS Manager, manager.id AS ManagerID FROM employee
-    INNER JOIN role ON employee.role_id = role.id
-    INNER JOIN department ON role.department_id = department.id
-    INNER JOIN employee manager ON employee.manager_id = manager.id`;
+    let query = `SELECT employee.id AS ID, employee.firstName AS First_Name`;
 
     connection.query(query, function(err, res) {
-        console.table('employee', res);
+        console.table(res);
         userMenu();
     })
 }
