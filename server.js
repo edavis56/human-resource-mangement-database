@@ -16,7 +16,7 @@ function userMenu() {
     inquirer.prompt({
         name: 'menu',
         type: 'list',
-        message: 'Please select an option.',
+        message: 'Please select an option using arrow keys.',
         choices: ['Departments', 'Roles', 'Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Exit']
     })
     .then(function(answer) {
