@@ -1,4 +1,4 @@
-INSERT INTO department (name)
+INSERT INTO department (depname)
 VALUES ("Manager Placeholder"),
        ("Sales"),
        ("Accounting"),
