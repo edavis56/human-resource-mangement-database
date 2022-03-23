@@ -79,6 +79,8 @@ NPM start
 
 ## YouTube Link
 
+https://www.youtube.com/watch?v=cGArDP5g3Jo
+
 ## GitHub Repository
 
 https://github.com/edavis56/human-resource-mangement-database
