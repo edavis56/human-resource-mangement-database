@@ -25,6 +25,8 @@ CREATE TABLE employee (
     id INTEGER AUTO_INCREMENT NOT NULL,
     firstName VARCHAR(30) NOT NULL,
     lastName VARCHAR(30) NOT NULL,
+    employeeDepartment VARCHAR(30) NOT NULL,
+    roleSalary DECIMAL NOT NULL,
     role_id INTEGER NOT NULL,
     FOREIGN KEY (roles_id) REFERENCES roles (id),
     PRIMARY KEY (id)
